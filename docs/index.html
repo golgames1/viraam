@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Viraam — a pause, when scrolling turns into autopilot</title>
+<meta name="description" content="An Android app that interrupts doomscrolling with one quiet line, then fades. No accounts, no tracking, no internet permission. Free and open source.">
+<meta property="og:title" content="Viraam — a pause, when scrolling turns into autopilot">
+<meta property="og:description" content="A quiet line takes over your screen when scrolling runs on autopilot, then fades on its own. No accounts, no tracking, no internet permission.">
+<meta property="og:image" content="https://golgames1.github.io/viraam/social.png">
+<meta property="og:url" content="https://golgames1.github.io/viraam/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ground:#EDEFEC; --raise:#F8F9F7; --ink:#1C2320; --muted:#5B6560; --faint:#8A948F;
+  --rule:#D3D8D4; --accent:#3D6B5C; --soft:#DCE7E1;
+  --serif:"Newsreader",Georgia,serif; --sans:"Figtree",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --ground:#121614; --raise:#1A1F1C; --ink:#E4E9E6; --muted:#A2ACA7; --faint:#737D78;
+  --rule:#2C3430; --accent:#8CC0AD; --soft:#1F2D28;
+}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground); color:var(--ink); font:17px/1.65 var(--sans); padding-inline:20px; padding-block:0 80px}
+.wrap{max-width:780px; margin-inline:auto}
+h1,h2{margin:0; text-wrap:balance; font-family:var(--serif); font-weight:400}
+p{margin:0}
+a{color:var(--accent)}
+header{padding-block:64px 36px; display:grid; gap:20px; justify-items:center; text-align:center}
+header img.icon{width:84px; height:84px; border-radius:20px}
+h1{font-size:clamp(44px,9vw,76px); line-height:1}
+h1 .dev{display:block; font-size:.42em; color:var(--muted); letter-spacing:.02em; margin-top:6px}
+.tag{font-size:19.5px; color:var(--muted); max-width:46ch}
+.badges{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; font:500 11.5px var(--mono); letter-spacing:.04em}
+.badges span{background:var(--soft); color:var(--accent); border-radius:6px; padding:5px 10px}
+.cta{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; padding-top:6px}
+.cta a{text-decoration:none; font-weight:600; font-size:15.5px; border-radius:12px; padding:13px 20px}
+.cta a.p{background:var(--accent); color:var(--ground)}
+.cta a.s{border:1px solid var(--rule); color:var(--ink); background:var(--raise)}
+.loop{display:block; width:100%; max-width:300px; margin:14px auto 0; border-radius:22px}
+section{border-top:1px solid var(--rule); padding-block:40px 8px; display:grid; gap:18px}
+h2{font-size:clamp(25px,3.6vw,33px); line-height:1.12}
+.lede{color:var(--muted); max-width:62ch}
+.shots{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px}
+.shots img{width:100%; border-radius:12px; display:block}
+.looks{display:grid; gap:0}
+.looks div{display:grid; grid-template-columns:minmax(0,110px) minmax(0,1fr); gap:18px; padding:11px 0; border-bottom:1px solid var(--rule)}
+.looks b{font-family:var(--serif); font-weight:500; font-size:18px}
+.looks span{color:var(--muted); font-size:16px}
+.note{background:var(--raise); border:1px solid var(--rule); border-radius:14px; padding:16px 18px; font-size:16px; color:var(--muted)}
+.note b{color:var(--ink)}
+ul{margin:0; padding-left:20px; display:grid; gap:8px; color:var(--muted)}
+ul b{color:var(--ink)}
+footer{border-top:1px solid var(--rule); margin-top:40px; padding-top:22px; font-size:14.5px; color:var(--faint); display:grid; gap:8px}
+@media (max-width:560px){ .looks div{grid-template-columns:1fr; gap:2px} }
+</style>
+</head><body>
+<div class="wrap">
+
+<header>
+  <img class="icon" src="icon.png" alt="">
+  <h1>Viraam<span class="dev">विराम · a pause</span></h1>
+  <p class="tag">A quiet line takes over your screen when scrolling turns into autopilot, then fades on its own.</p>
+  <div class="badges"><span>ANDROID 8+</span><span>2.1 MB</span><span>MIT</span><span>NO INTERNET PERMISSION</span><span>NO TRACKING</span></div>
+  <div class="cta">
+    <a class="p" href="https://github.com/golgames1/viraam/releases/latest">Download</a>
+    <a class="s" href="https://github.com/golgames1/viraam">Source on GitHub</a>
+  </div>
+  <img class="loop" src="loop.gif" alt="A quote fades in over a feed, then fades away">
+  <p style="font-size:13.5px;color:var(--faint)">Real frames from the app. The feed behind it is a stand-in, not anyone's actual timeline.</p>
+</header>
+
+<section>
+  <h2>You open a feed for one thing, and twenty minutes go missing</h2>
+  <p class="lede">Viraam notices, waits for the gap between two reels, quietly mutes the sound, and fills the screen with one line worth reading. A few seconds later it fades by itself and you carry on.</p>
+  <p class="lede">There is nothing to tap and nothing to dismiss. No streaks, no scores, no weekly report telling you off. The only thing you can do is press and hold to keep a line you liked.</p>
+</section>
+
+<section>
+  <h2>It picks its moment, not a timer</h2>
+  <p class="lede">A hidden drift level fills while you scroll feed apps, faster when you are swiping quickly, and drains when you chat, use maps or put the phone down. When it passes a tipping point — set a little differently every time, so you cannot learn to expect it — the next swipe is the moment.</p>
+  <p class="lede">It holds off completely during calls, while you are typing, when the phone is sideways or locked, and it respects quiet hours, a daily limit, and at least twenty minutes between pauses. You choose which apps count.</p>
+</section>
+
+<section>
+  <h2>Seven looks, each with its own quiet sound</h2>
+  <div class="shots">
+    <img src="ink.png" alt="Ink"><img src="breath.png" alt="Breath"><img src="candle.png" alt="Candle"><img src="stars.png" alt="Stars">
+  </div>
+  <div class="looks">
+    <div><b>Ink</b><span>Rice paper, a brush circle drawn in one stroke, the line written out, a red seal.</span></div>
+    <div><b>Breath</b><span>The screen dims and a warm light breathes while the words arrive one at a time.</span></div>
+    <div><b>Frost</b><span>The glass fogs with your feed blurred behind it, then drops run down and it clears.</span></div>
+    <div><b>Ripple</b><span>A drop falls into still water and the line surfaces with its reflection.</span></div>
+    <div><b>Candle</b><span>Everything goes dark and one flame lights the words.</span></div>
+    <div><b>Drift</b><span>A single leaf falls, swaying, and the lines appear in its wake.</span></div>
+    <div><b>Stars</b><span>A night sky, stars joining into a constellation, dawn washing them away.</span></div>
+  </div>
+  <p class="lede">A singing bowl, soft wind, real rain, a water drop, a crackling wick, a breeze, glass chimes. Everything is generated in the app except one rain recording. It never shows the same look twice in a row.</p>
+</section>
+
+<section>
+  <h2>Your words</h2>
+  <p class="lede">A hundred lines to begin with, mostly English: Marcus Aurelius, Seneca, Lao Tzu, Zhuangzi, Bashō, Thoreau, Emerson, Dickinson, Blake, Pascal, Wilde, Twain. Choose the kinds you want — poetry, stoic, zen and tao, nature, reflection, wit — and add your own lines.</p>
+  <p class="lede">Hindi, Sanskrit, Bengali, Punjabi and Tamil are there if you want them, switched off until you ask, with the English meaning underneath and proper lettering for each script.</p>
+</section>
+
+<section>
+  <h2>What it can and cannot see</h2>
+  <ul>
+    <li><b>No internet permission at all.</b> The app has no way to send anything anywhere, even by mistake.</li>
+    <li><b>It cannot read your screen.</b> The accessibility service is declared with screen reading off, so it receives the name of the app in front and the fact that a scroll happened. Nothing else.</li>
+    <li><b>Nothing is collected.</b> No accounts, no analytics, no crash reporting, no third-party code of any kind.</li>
+    <li><b>Your lines stay on the phone.</b> Android backups are switched off; there is a Save a copy button if you want a file.</li>
+  </ul>
+  <p class="lede"><a href="https://github.com/golgames1/viraam/blob/main/PRIVACY.md">The full privacy note</a> · <a href="https://github.com/golgames1/viraam">read the code</a></p>
+</section>
+
+<section>
+  <h2>Installing</h2>
+  <p class="lede"><b>The easy way:</b> install <a href="https://github.com/ImranR98/Obtainium">Obtainium</a>, tap Add App, and paste <code>https://github.com/golgames1/viraam</code>. It installs Viraam and keeps it updated.</p>
+  <p class="lede"><b>Or download it:</b> take the file from <a href="https://github.com/golgames1/viraam/releases/latest">Releases</a> and open it.</p>
+  <div class="note"><b>If Android says "App blocked to protect your device"</b> — that is Play Protect refusing apps that use the accessibility permission when they arrive through a browser, and it is not about this app in particular. Either install through Obtainium, or open Play Store → your picture → Play Protect → settings → turn off scanning for a minute while you install.</div>
+  <p class="lede">Then open Viraam, go through the three setup screens, and switch it on where Android asks.</p>
+</section>
+
+<footer>
+  <p>Built by <a href="https://github.com/golgames1">golgames1</a>. Vibe-coded by a non-coder, with a lot of help from an AI, then tested on a real phone until it behaved.</p>
+  <p>Rain: "Sound of light rainfall" by Mijesty, Wikimedia Commons, CC BY-SA 4.0. Lettering from Google Fonts under the Open Font License. Quotes are out of copyright; English renderings written for the app. Code under the MIT licence.</p>
+</footer>
+
+</div>
+</body></html>
