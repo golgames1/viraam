@@ -13,9 +13,16 @@ android {
         applicationId = "io.github.golgames1.viraam"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.1.1"
     }
+    // Google's encrypted dependency blob can't be inspected by anyone but Google,
+    // so leave it out (required by IzzyOnDroid and F-Droid)
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     buildFeatures { buildConfig = true }   // so the code can tell a test build from a real one
 
     signingConfigs {

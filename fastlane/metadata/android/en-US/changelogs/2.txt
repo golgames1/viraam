@@ -1,0 +1,1 @@
+Removes Google's encrypted dependency-info blob from the signed APK, so the build can be inspected by anyone (requested by the IzzyOnDroid scanner). No functional changes.
