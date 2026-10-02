@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Just saying hello, or asking something
+    url: https://github.com/golgames1/viraam/discussions
+    about: Discussions is the friendlier place for questions and "does anyone else feel this way" chats.

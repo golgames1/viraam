@@ -1,0 +1,33 @@
+Viraam — things in this app that other people made
+==================================================
+
+1. Rain recording  (app/src/main/assets/rain.js)
+   "Sound of light rainfall" by Mijesty, from Wikimedia Commons.
+   https://commons.wikimedia.org/wiki/File:Sound_of_light_rainfall.ogg
+   Licence: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+   https://creativecommons.org/licenses/by-sa/4.0/
+   Changes made: a calm 12-second excerpt (26s-38s), softened above 7.5 kHz and
+   re-encoded as MP3. This excerpt stays under CC BY-SA 4.0. The rest of the app
+   is MIT licensed; the licence of this one file does not extend to the code.
+
+2. Lettering  (app/src/main/assets/fonts/)
+   Cormorant Garamond, Spectral, Caveat, Gilda Display, IM Fell English,
+   Libre Caslon Text, Marcellus, Kalam, Tiro Devanagari Hindi, Tiro Devanagari
+   Sanskrit, Tiro Bangla, Tiro Gurmukhi, Tiro Tamil, Newsreader, Figtree and
+   JetBrains Mono, all from Google Fonts.
+   Licence: SIL Open Font License 1.1 — https://scripts.sil.org/OFL
+   See app/src/main/assets/fonts/LICENSE.txt
+
+3. The words  (app/src/main/assets/quotes.js)
+   Every line is old enough to be out of copyright: Kabir, Rahim, Vrind,
+   Tulsidas, Mirabai, Ghalib, Iqbal, Momin, the Bhagavad Gita, the Upanishads,
+   Patanjali, Thiruvalluvar, Avvaiyar, Bharathiyar, Tagore, Lalon, Bulleh Shah,
+   Marcus Aurelius, Seneca, Epictetus, Epicurus, Lao Tzu, Zhuangzi, Basho, Issa,
+   Ryokan, the Dhammapada, Confucius, Thoreau, Emerson, Muir, Wordsworth, Blake,
+   Heraclitus, Pascal, Socrates, Dickinson, Whitman, Keats, Van Gogh, Gibran,
+   Tolstoy, Goethe, Kierkegaard, Eliot, Wilde, Twain, Jerome K. Jerome,
+   Chesterton and Parkinson.
+   The English renderings of non-English lines were written for this app and are
+   MIT licensed along with the rest.
+
+No third-party code, libraries, SDKs or trackers are used anywhere in this app.

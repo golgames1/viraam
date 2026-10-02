@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Viraam</string>
+    <string name="service_description">Viraam notices when you have been scrolling on autopilot: which app is open, and when you swipe. It cannot read what is on your screen, has no internet permission, and nothing leaves your phone.</string>
+</resources>

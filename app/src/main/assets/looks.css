@@ -1,0 +1,167 @@
+.ov{position:absolute; inset:0; z-index:5; opacity:0; pointer-events:none; overflow:hidden}
+.phone[data-state="in"] .ov{opacity:1}
+.phone.instant, .phone.instant *, .phone.instant *::before, .phone.instant *::after{transition:none !important}
+
+/* hold to keep */
+.keep{position:absolute; width:64px; height:64px; margin:-32px 0 0 -32px; z-index:8; opacity:0; pointer-events:none; transform:scale(.8); transition:opacity .15s, transform .2s}
+.keep circle{fill:none; stroke:var(--keep); stroke-width:2.5; stroke-linecap:round; stroke-dasharray:176; stroke-dashoffset:176; transform:rotate(-90deg); transform-origin:50% 50%; filter:drop-shadow(0 0 3px rgba(0,0,0,.25))}
+.phone.holding .keep{opacity:1; transform:scale(1)}
+.phone.holding .keep circle{stroke-dashoffset:0; transition:stroke-dashoffset .8s linear}
+.kchip{position:absolute; left:50%; bottom:30px; z-index:8; display:flex; align-items:center; gap:7px; transform:translate(-50%,16px); opacity:0; white-space:nowrap; background:rgba(18,18,18,.55); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); color:#fff; font:600 12px var(--sans); padding:8px 14px; border-radius:999px; transition:opacity .3s, transform .3s}
+.kchip svg{width:12px; height:14px}
+.kchip svg path{fill:#fff}
+.phone.kept .kchip{opacity:1; transform:translate(-50%,0)}
+.phone.kept .keep{opacity:0; transform:scale(1.5); transition:opacity .4s, transform .4s}
+
+/* ---------- INK ---------- */
+.ink{--keep:#1C1B18}
+.ink .ov{background:#E8E4DA url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .32 0 0 0 0 .29 0 0 0 0 .24 0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); display:grid; place-content:center; justify-items:center; gap:4px; padding:24px; text-align:center}
+.phone.ink[data-state="in"] .ov{transition:opacity 1.2s ease-out, filter 0s}
+.phone.ink[data-state="out"] .ov{opacity:0; filter:blur(6px); transition:opacity 2.4s ease-in, filter 2.4s ease-in}
+.enso{width:150px; height:150px; margin-bottom:-18px}
+.enso path{stroke-dasharray:400; stroke-dashoffset:400}
+.phone.ink:is([data-state="in"],[data-state="out"]) .enso path{stroke-dashoffset:0; transition:stroke-dashoffset 2.1s cubic-bezier(.55,.05,.35,1) .5s}
+.deva{font-family:"Tiro Devanagari Hindi", "Nirmala UI", serif; font-size:29px; line-height:1.5; color:#1C1B18}
+.deva span{display:block; clip-path:inset(0 100% 0 0)}
+.phone.ink:is([data-state="in"],[data-state="out"]) .deva span{clip-path:inset(0 0 0 0); transition:clip-path 1.1s cubic-bezier(.6,0,.4,1) var(--d)}
+.trans{font-family:"Cormorant Garamond", Georgia, serif; font-style:italic; font-size:17px; line-height:1.35; color:#5E594F; opacity:0; margin-top:8px}
+.phone.ink:is([data-state="in"],[data-state="out"]) .trans{opacity:1; transition:opacity 1.2s ease var(--td,3s)}
+.seal{margin-top:14px; width:38px; height:38px; background:#B8352A; color:#F3E9E2; border-radius:3px; display:grid; place-items:center; font:15px/1 "Tiro Devanagari Hindi", serif; transform:rotate(-5deg) scale(1.7); opacity:0; box-shadow:inset 0 0 0 2px #B8352A, inset 0 0 0 3.5px #F0DDD5}
+.phone.ink:is([data-state="in"],[data-state="out"]) .seal{opacity:.92; transform:rotate(-5deg) scale(1); transition:transform .35s cubic-bezier(.3,1.6,.5,1) var(--sd,3.5s), opacity .15s ease var(--sd,3.5s)}
+
+/* ---------- BREATH ---------- */
+.breath .ov{background:linear-gradient(180deg,#141931 0%,#25234F 55%,#3A3570 100%); display:grid; grid-template-rows:1fr auto auto 1fr; justify-items:center; padding:28px; text-align:center}
+.phone.breath[data-state="in"] .ov{transition:opacity 1s ease-out}
+.phone.breath[data-state="out"] .ov{opacity:0; transition:opacity 2.4s ease-in .4s}
+.orbwrap{grid-row:2; width:150px; height:150px; transform:scale(.35); opacity:0; display:grid; place-items:center; margin-bottom:46px}
+.phone.breath[data-state="in"] .orbwrap{transform:scale(1); opacity:1; transition:transform 1.9s cubic-bezier(.2,.7,.2,1) .5s, opacity 1.2s ease .5s}
+.phone.breath[data-state="out"] .orbwrap{transform:scale(.15); opacity:0; transition:transform 2.4s ease-in, opacity 2s ease-in}
+.orb{width:100%; height:100%; border-radius:50%; background:radial-gradient(circle at 50% 45%, #FFF3DE 0%, #F3D9B1 24%, rgba(226,170,160,.55) 50%, rgba(120,100,170,0) 72%); position:relative}
+.phone.breath:is([data-state="in"],[data-state="out"]) .orb{animation:breathe 10s ease-in-out infinite}
+@keyframes breathe{0%{transform:scale(.78)}40%{transform:scale(1.1)}100%{transform:scale(.78)}}
+.blbl{position:absolute; left:0; right:0; bottom:-32px; font:italic 300 12px "Spectral", Georgia, serif; letter-spacing:.14em; color:#C9CBE0}
+.blbl span{position:absolute; left:0; right:0}
+.blbl span{opacity:0}
+.phone.breath:is([data-state="in"],[data-state="out"]) .blbl .bi{animation:lblIn 10s ease-in-out infinite}
+.phone.breath:is([data-state="in"],[data-state="out"]) .blbl .bo{animation:lblOut 10s ease-in-out infinite}
+@keyframes lblIn{0%{opacity:0}6%{opacity:.8}34%{opacity:.8}40%{opacity:0}100%{opacity:0}}
+@keyframes lblOut{0%,40%{opacity:0}46%{opacity:.8}94%{opacity:.8}100%{opacity:0}}
+.words{grid-row:3; font:italic 300 24px/1.35 "Spectral", Georgia, serif; color:#ECE6F4; max-width:210px}
+.words span{display:inline-block; opacity:0; filter:blur(8px); transform:translateY(6px)}
+.phone.breath:is([data-state="in"],[data-state="out"]) .words span{opacity:1; filter:blur(0); transform:none; transition:opacity 1s ease calc(1.7s + var(--i) * .34s), filter 1.1s ease calc(1.7s + var(--i) * .34s), transform 1.1s ease calc(1.7s + var(--i) * .34s)}
+.who{grid-row:4; align-self:start; margin-top:16px; font:200 11px "Spectral", serif; letter-spacing:.3em; text-transform:uppercase; color:#9A9CC0; opacity:0}
+.phone.breath:is([data-state="in"],[data-state="out"]) .who{opacity:1; transition:opacity 1.2s ease 4.8s}
+
+/* ---------- FROST ---------- */
+.frost{--keep:#243640}
+.frost .ov{background:rgba(222,230,234,.52) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); -webkit-backdrop-filter:blur(9px) saturate(.6); backdrop-filter:blur(9px) saturate(.6); display:grid; align-content:center; padding:30px 26px}
+.phone.frost[data-state="in"] .ov{transition:opacity 1.6s ease-out}
+.phone.frost[data-state="out"] .ov{opacity:0; transition:opacity 1.5s ease-in 1.5s}
+.hand{font:500 28px/1.12 "Caveat", "Segoe Print", cursive; color:#243640}
+.hand span{display:block; clip-path:inset(0 100% 0 0)}
+.phone.frost:is([data-state="in"],[data-state="out"]) .hand span{clip-path:inset(0 0 0 0); transition:clip-path .8s cubic-bezier(.5,0,.5,1) var(--d)}
+.hand .sig{font-size:21px; color:#4E6470; margin-top:12px}
+.drop{position:absolute; width:6px; height:9px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; background:radial-gradient(circle at 35% 30%, #fff 0 22%, rgba(255,255,255,.5) 40%, rgba(120,145,160,.45) 100%)}
+.drop::before{content:""; position:absolute; left:2px; bottom:8px; width:2px; height:0; background:linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.55)); border-radius:2px}
+.phone.frost[data-state="out"] .drop{transform:translateY(620px); transition:transform 2.2s cubic-bezier(.55,0,.85,.55) var(--d)}
+.phone.frost[data-state="out"] .drop::before{height:120px; transition:height 1.2s ease var(--d)}
+
+/* ---------- RIPPLE ---------- */
+.ripple .ov{opacity:1; background:transparent}
+.phone.ripple[data-state="out"] .ov{opacity:0; transition:opacity 2.4s ease-in .3s}
+.phone.ripple[data-state="idle"] .ov{opacity:0}
+.water{position:absolute; inset:0; background:radial-gradient(130% 90% at 50% 66%, #22656C 0%, #134149 42%, #0A2A33 100%); clip-path:circle(0% at 50% 66%)}
+.phone.ripple:is([data-state="in"],[data-state="out"]) .water{clip-path:circle(140% at 50% 66%); transition:clip-path 2.3s cubic-bezier(.3,.6,.2,1) .6s}
+.dropf{position:absolute; left:50%; top:0; width:8px; height:12px; margin-left:-4px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; background:#DDF1EC; box-shadow:0 0 8px rgba(221,241,236,.8); opacity:0}
+.phone.ripple:is([data-state="in"],[data-state="out"]) .dropf{animation:dropfall .62s cubic-bezier(.55,0,1,.6) forwards}
+@keyframes dropfall{0%{opacity:1; transform:translateY(-14px)}92%{opacity:1; transform:translateY(var(--dropY,356px)) scaleY(1.3)}100%{opacity:0; transform:translateY(calc(var(--dropY,356px) + 6px)) scale(.4)}}
+.ring{position:absolute; left:50%; top:66%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:1.5px solid rgba(220,241,236,.75); opacity:0}
+.phone.ripple:is([data-state="in"],[data-state="out"]) .ring{animation:ringout 4.2s cubic-bezier(.2,.6,.3,1) var(--d) infinite}
+@keyframes ringout{0%{opacity:.9; transform:scale(.1,.04)}100%{opacity:0; transform:scale(8,3)}}
+.rq{position:absolute; left:22px; right:22px; top:19%; text-align:center; display:grid; gap:0}
+.rq p{font:26px/1.22 "Gilda Display", Georgia, serif; color:#E6F3EF; opacity:0; filter:blur(6px)}
+.rq .refl{transform:scaleY(-.8); transform-origin:50% 50%; margin-top:6px; -webkit-mask:linear-gradient(180deg, transparent 20%, #000 100%); mask:linear-gradient(180deg, transparent 20%, #000 100%); color:#8FC4BB}
+.rq .by{font:500 10px var(--mono); letter-spacing:.24em; text-transform:uppercase; color:#8FC4BB; opacity:0; margin-top:14px}
+.phone.ripple:is([data-state="in"],[data-state="out"]) .rq p{opacity:1; filter:blur(0); transition:opacity 1.6s ease 2s, filter 1.8s ease 2s}
+.phone.ripple:is([data-state="in"],[data-state="out"]) .rq .refl{opacity:.32; animation:waver 3.2s ease-in-out infinite}
+.phone.ripple:is([data-state="in"],[data-state="out"]) .rq .by{opacity:.9; transition:opacity 1.2s ease 3.4s}
+@keyframes waver{0%,100%{transform:scaleY(-.8) skewX(0)}50%{transform:scaleY(-.84) skewX(4deg)}}
+
+/* ---------- CANDLE ---------- */
+.candle .ov{background:#0A0806}
+.phone.candle[data-state="in"] .ov{transition:opacity 1.1s ease-out}
+.phone.candle[data-state="out"] .ov{opacity:0; transition:opacity 1.6s ease-in 1.2s}
+.glow{position:absolute; left:50%; bottom:92px; width:560px; height:560px; margin:0 0 -280px -280px; border-radius:50%; background:radial-gradient(circle, rgba(255,186,105,.42) 0%, rgba(255,150,70,.14) 28%, rgba(0,0,0,0) 58%); opacity:0; transform:scale(.08)}
+.phone.candle:is([data-state="in"]) .glow{opacity:1; transform:scale(1); transition:transform 2.6s cubic-bezier(.2,.7,.2,1) .8s, opacity 1.4s ease .8s}
+.phone.candle[data-state="out"] .glow{opacity:0; transform:scale(.3); transition:opacity .9s ease, transform 1s ease-in}
+.glow::after{content:""; position:absolute; inset:0; border-radius:50%; background:inherit; animation:flick 2.7s ease-in-out infinite; opacity:.4}
+@keyframes flick{0%,100%{opacity:.35}23%{opacity:.6}41%{opacity:.25}57%{opacity:.55}78%{opacity:.3}}
+.cnd{position:absolute; left:50%; bottom:34px; width:22px; height:62px; margin-left:-11px; background:linear-gradient(90deg,#9f8f76,#efe3cf 45%,#b09f84); border-radius:3px 3px 2px 2px; opacity:.95}
+.wick{position:absolute; left:50%; top:-8px; width:2px; height:9px; margin-left:-1px; background:#2a211a; border-radius:1px}
+.flame{position:absolute; left:50%; bottom:calc(100% + 3px); width:14px; height:30px; margin-left:-7px; transform-origin:50% 100%; transform:scale(0)}
+.flame i{position:absolute; inset:0; border-radius:50% 50% 45% 45% / 65% 65% 35% 35%; background:radial-gradient(ellipse at 50% 78%, #fff8e0 0 18%, #ffd27a 38%, #ff9a3c 62%, rgba(255,120,40,0) 76%); transform-origin:50% 100%; animation:fl 1.9s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:scaleY(1) skewX(0)}20%{transform:scaleY(1.09) skewX(2.5deg)}45%{transform:scaleY(.95) skewX(-2deg)}70%{transform:scaleY(1.05) skewX(1.5deg)}}
+.phone.candle[data-state="in"] .flame{transform:scale(1); transition:transform .45s cubic-bezier(.3,1.5,.5,1) .6s}
+.phone.candle[data-state="out"] .flame{transform:scale(0,.2); transition:transform .5s ease-in}
+.smoke{position:absolute; left:50%; bottom:calc(100% + 6px); width:3px; height:50px; margin-left:-1.5px; border-radius:3px; background:linear-gradient(rgba(190,180,170,0), rgba(190,180,170,.5)); filter:blur(1.5px); opacity:0; transform-origin:50% 100%}
+.phone.candle[data-state="out"] .smoke{animation:smoke 2.2s ease-out .35s forwards}
+@keyframes smoke{0%{opacity:0; transform:translateY(0) scaleY(.3)}25%{opacity:.7}100%{opacity:0; transform:translateY(-70px) scaleY(1.4) skewX(18deg)}}
+.cq{position:absolute; left:26px; right:26px; top:24%; text-align:center; display:grid; gap:14px}
+.cq p{font:italic 27px/1.25 "IM Fell English", Georgia, serif; color:#F1D6A4; text-shadow:0 0 18px rgba(255,170,80,.35); opacity:0}
+.cq small{font:italic 15px "IM Fell English", Georgia, serif; color:#B8976A; opacity:0}
+.phone.candle:is([data-state="in"],[data-state="out"]) .cq p{opacity:1; transition:opacity 2.2s ease 1.7s}
+.phone.candle:is([data-state="in"],[data-state="out"]) .cq small{opacity:.9; transition:opacity 1.4s ease 3.4s}
+
+/* ---------- DRIFT ---------- */
+.drift{--keep:#3E3A2E}
+.drift .ov{background:linear-gradient(180deg,#E9EEE1 0%,#F4EEE0 100%)}
+.phone.drift[data-state="in"] .ov{transition:opacity 1.3s ease-out}
+.phone.drift[data-state="out"] .ov{opacity:0; transition:opacity 2.2s ease-in .2s}
+.leaf{position:absolute; left:0; top:0; width:34px; height:34px; opacity:0}
+.phone.drift:is([data-state="in"],[data-state="out"]) .leaf{animation:fall 6s cubic-bezier(.45,.05,.55,.95) .3s forwards}
+@keyframes fall{
+  0%{opacity:1; transform:translate(30px,-40px) rotate(-20deg)}
+  18%{transform:translate(170px,70px) rotate(38deg)}
+  36%{transform:translate(52px,170px) rotate(-32deg)}
+  54%{transform:translate(182px,270px) rotate(42deg)}
+  74%{transform:translate(70px,380px) rotate(-18deg)}
+  100%{opacity:1; transform:translate(150px,478px) rotate(76deg)}
+}
+.dq{position:absolute; left:26px; right:26px; top:27%; display:grid; gap:2px}
+.dq span{display:block; font:italic 22px/1.35 "Libre Caslon Text", Georgia, serif; color:#3E3A2E; opacity:0; transform:translateX(-10px); filter:blur(4px)}
+.dq .by{font:500 10px var(--mono); letter-spacing:.22em; text-transform:uppercase; color:#8B7A55; margin-top:16px}
+.phone.drift:is([data-state="in"],[data-state="out"]) .dq span{opacity:1; transform:none; filter:blur(0); transition:opacity 1.2s ease var(--d), transform 1.4s ease var(--d), filter 1.2s ease var(--d)}
+
+/* ---------- STARS ---------- */
+.stars .ov{background:radial-gradient(120% 80% at 50% 18%, #18213F 0%, #0A0F22 55%, #05070F 100%)}
+.phone.stars[data-state="in"] .ov{transition:opacity 1.3s ease-out}
+.phone.stars[data-state="out"] .ov{opacity:0; transition:opacity 1.6s ease-in 1.5s}
+.dawn{position:absolute; inset:0; background:linear-gradient(0deg, #C98A8E 0%, #5B4E7E 35%, rgba(30,30,70,0) 75%); opacity:0}
+.phone.stars[data-state="out"] .dawn{opacity:.85; transition:opacity 2.2s ease}
+.st{position:absolute; width:var(--s); height:var(--s); border-radius:50%; background:#fff; opacity:0}
+.phone.stars:is([data-state="in"]) .st{opacity:var(--o); transition:opacity 1s ease var(--d); animation:tw var(--tw) ease-in-out infinite var(--d)}
+.phone.stars[data-state="out"] .st{opacity:0; transition:opacity 1.2s ease calc(var(--d) * .4)}
+@keyframes tw{0%,100%{transform:scale(1)}50%{transform:scale(.55)}}
+.cons{position:absolute; left:0; top:48px; width:100%; height:auto; overflow:visible}
+.cons polyline{fill:none; stroke:rgba(210,220,255,.5); stroke-width:1; stroke-dasharray:300; stroke-dashoffset:300}
+.phone.stars:is([data-state="in"],[data-state="out"]) .cons polyline{stroke-dashoffset:0; transition:stroke-dashoffset 1.8s ease-in-out 3.1s}
+.cons circle{fill:#fff; opacity:0; transform-box:fill-box; transform-origin:center; transform:scale(0)}
+.phone.stars:is([data-state="in"],[data-state="out"]) .cons circle{opacity:1; transform:scale(1); transition:transform .5s cubic-bezier(.3,1.8,.5,1) var(--d), opacity .3s ease var(--d); filter:drop-shadow(0 0 3px #fff)}
+.sq{position:absolute; left:26px; right:26px; top:52%; text-align:center; display:grid; gap:14px}
+.sq p{font:19px/1.45 "Marcellus", Georgia, serif; color:#E3E6F5; letter-spacing:.02em; opacity:0}
+.sq small{font:500 9.5px var(--mono); letter-spacing:.2em; text-transform:uppercase; color:#8E97C4; opacity:0}
+.phone.stars:is([data-state="in"],[data-state="out"]) .sq p{opacity:1; transition:opacity 1.8s ease 3.9s}
+.phone.stars:is([data-state="in"],[data-state="out"]) .sq small{opacity:1; transition:opacity 1.2s ease 5s}
+
+
+/* ---------- app additions ---------- */
+/* Frost on a real phone: the window itself blurs what's behind (Android 12+);
+   without that, the fog is thicker so the feed behind stays soft */
+.frost .ov{-webkit-backdrop-filter:none; backdrop-filter:none; background-color:rgba(224,232,236,.8)}
+.noblur .frost .ov{background-color:rgba(224,232,236,.94)}
+/* right-to-left scripts write from the right */
+.deva span[dir="rtl"], .hand span[dir="rtl"]{clip-path:inset(0 0 0 100%)}
+/* Whisper strength: see-through, a little lighter */
+.whisper .phone[data-state="in"] .ov{opacity:.8}
+.ov .qtr{font-family:"Cormorant Garamond",Georgia,serif; font-style:italic; line-height:1.35; opacity:0}
+.phone:is([data-state="in"],[data-state="out"]) .qtr{opacity:.8; transition:opacity 1.2s ease var(--td,3s)}

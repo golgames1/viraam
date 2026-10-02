@@ -1,0 +1,13 @@
+You open a feed to look at one thing and twenty minutes disappear. Viraam notices, waits for the gap between two reels, quietly mutes the sound, and fills the screen with one line worth reading. A few seconds later it fades by itself and you carry on.
+
+There is nothing to tap and nothing to dismiss. The only thing you can do is press and hold to keep a line you liked.
+
+<b>It picks its moment, not a timer.</b> A hidden "drift" level fills while you scroll feed apps, faster when you are swiping quickly, and drains when you chat, use maps or put the phone down. When it passes a tipping point, set a little differently every time, the next swipe is the moment. It holds off during calls, while you type, when the phone is sideways or locked, and it respects quiet hours, a daily limit and a gap of at least twenty minutes.
+
+<b>Seven looks, each with its own quiet sound.</b> Ink writes a couplet on rice paper with a brush circle and a red seal. Breath dims the screen and a warm light breathes while the words arrive one at a time. Frost fogs the glass with your feed blurred behind it, then drops run down and it clears. Ripple drops water into stillness. Candle lights one flame in the dark. Drift lets a leaf fall and the lines follow it down. Stars join a constellation overhead.
+
+<b>Your words.</b> A hundred lines to begin with, mostly English: Marcus Aurelius, Seneca, Lao Tzu, Basho, Thoreau, Dickinson, Wilde, Twain. Choose the kinds you want, add your own lines, and switch on Hindi, Sanskrit, Bengali, Punjabi or Tamil if you want them, with the English meaning underneath.
+
+<b>What it can see.</b> Viraam uses Android's accessibility service with screen reading switched off: it receives the name of the app in front and the fact that a scroll happened, and nothing else. It has no internet permission at all, so it cannot send anything anywhere. No accounts, no analytics, no third-party code.
+
+Open source, MIT licensed.

@@ -1,0 +1,13 @@
+name: An idea
+description: A look, a sound, a setting, or lines worth adding
+labels: [idea]
+body:
+  - type: textarea
+    attributes:
+      label: The idea
+      placeholder: What it would do, and when it would help.
+    validations: { required: true }
+  - type: textarea
+    attributes:
+      label: Lines you'd like included
+      placeholder: "If you're suggesting quotes: the line, who said it, and the language. They must be old enough to be out of copyright."

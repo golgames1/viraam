@@ -1,0 +1,12 @@
+.gradle/
+build/
+app/build/
+local.properties
+*.apk
+shot*.png
+phone-log.txt
+share/
+keystore.properties
+*.jks
+*.keystore
+docs/_*

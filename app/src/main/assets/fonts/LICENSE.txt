@@ -1,0 +1,4 @@
+The fonts in this folder come from Google Fonts (fonts.google.com) and are
+licensed under the SIL Open Font License 1.1: https://scripts.sil.org/OFL
+
+Families: Cormorant Garamond, Spectral, Caveat, Gilda Display, IM Fell English, Libre Caslon Text, Marcellus, Kalam, Tiro Devanagari Hindi, Tiro Devanagari Sanskrit, Tiro Bangla, Tiro Gurmukhi, Tiro Tamil, Newsreader, Figtree, JetBrains Mono

@@ -1,0 +1,227 @@
+<!doctype html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<style>
+:root{ --mono:"JetBrains Mono", monospace; --sans:system-ui, sans-serif; }
+html,body{margin:0; height:100%; background:transparent; overflow:hidden; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent}
+/* the looks were designed on a 254 px wide screen; the stage is scaled to fit the phone */
+.phone{--keep:#fff; position:absolute; left:0; top:0; transform-origin:0 0}
+.ink{--keep:#1C1B18} .frost{--keep:#243640} .drift{--keep:#3E3A2E}
+.screen{position:absolute; inset:0; overflow:hidden}
+</style>
+<link rel="stylesheet" href="looks.css">
+<script src="rain.js"></script>
+<script src="sound.js"></script>
+<script src="quotes.js"></script>
+</head>
+<body>
+<div class="phone" id="stage" data-state="idle"><div class="screen" id="screen"><div class="ov" id="ov"></div></div></div>
+
+<script>
+var BW=254, stage=document.getElementById('stage'), screenEl=document.getElementById('screen'), ov=document.getElementById('ov');
+var H=548;
+function fit(){
+  if(!innerWidth || !innerHeight) return;
+  var s=innerWidth/BW; H=innerHeight/s;
+  stage.style.width=BW+'px'; stage.style.height=H+'px'; stage.style.transform='scale('+s+')';
+  stage.style.setProperty('--dropY',(H*.66-6)+'px');
+}
+fit(); addEventListener('resize',fit);
+
+var BRIDGE=window.Android||{done:function(){},chosen:function(){},keep:function(){},blur:function(){},vibrate:function(){}};
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+/* break a line into short rows for the looks that write line by line */
+/* visible width: vowel signs and other combining marks don't take up their own space */
+function vlen(s){ return s.replace(/[̀-ͯऀ-ःऺ-ॏ॑-ॗॢॣঁ-ঃ়-ৗৢৣਁ-ਃ਼-ੑੰੱஂா-ௗً-ٰٟ]/g,'').length; }
+function rows(text,max){
+  // fill each row with words; after punctuation, start a new row only if this one is already well filled
+  var out=[], cur='';
+  text.split(/\s+/).forEach(function(w){
+    if(!cur) cur=w;
+    else if(vlen(cur+' '+w)<=max) cur+=' '+w;
+    else { out.push(cur); cur=w; }
+    if(/[,।॥;:.؟،]$/.test(cur) && vlen(cur)>=max*.5){ out.push(cur); cur=''; }
+  });
+  if(cur) out.push(cur);
+  return out;
+}
+/* inline styles are wrapped in double quotes, so font stacks must use single ones */
+function q1(f){ return String(f||'').replace(/"/g,"'"); }
+function sizeK(text){ var n=text.length; return n<45?1 : n<70?.86 : n<100?.74 : .64; }
+function initials(a){ return (a||'').split(/\s+/).filter(Boolean).slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
+
+/* ---------- one builder per look: returns {html, in, out} (ms) ---------- */
+var BUILD={
+  ink:function(q,tr,k,F){
+    var f=q1(F)||"'Cormorant Garamond',Georgia,serif", ital=F?'':'font-style:italic;';
+    var fsz=F?24:25, r=rows(q.t, Math.round((F?15:22)/k)), step=r.length>4?.6:.8;
+    var h='<svg class="enso" viewBox="0 0 200 200" aria-hidden="true"><defs><filter id="brush"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="3" seed="4"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter></defs><path d="M135 39 A70 70 0 1 1 88 31" fill="none" stroke="#1C1B18" stroke-width="13" stroke-linecap="round" filter="url(#brush)" opacity=".9"/></svg>';
+    h+='<div class="deva" style="font-family:'+f+';'+ital+'font-size:'+(fsz*k).toFixed(1)+'px">'+r.map(function(x,i){return '<span style="--d:'+(1.7+i*step).toFixed(2)+'s">'+esc(x)+'</span>';}).join('')+'</div>';
+    var td=1.7+r.length*step+.2;
+    if(tr) h+='<p class="trans" style="--td:'+td.toFixed(2)+'s;font-size:'+(15*Math.max(k,.8)).toFixed(1)+'px">'+esc(tr)+'</p>';
+    h+='<div class="seal" aria-hidden="true" style="--sd:'+(td+.5).toFixed(2)+'s;'+(q.s?'':'font:600 13px/1 Georgia,serif;letter-spacing:.04em')+'">'+esc(q.s||initials(q.a))+'</div>';
+    return {html:h, in:(td+1)*1000, out:2600};
+  },
+  breath:function(q,tr,k,F){
+    var words=q.t.split(/\s+/), step=Math.min(.34, 5/words.length);
+    var h='<div class="orbwrap"><div class="orb"><div class="blbl"><span class="bi">breathe in</span><span class="bo">and out</span></div></div></div>';
+    h+='<p class="words" style="font-size:'+(24*k).toFixed(1)+'px;max-width:'+(210+(1-k)*60)+'px'+(F?';font-family:'+q1(F)+';font-style:normal':'')+'">'+words.map(function(w,i){return '<span style="--i:'+i+';transition-delay:'+(1.7+i*step).toFixed(2)+'s">'+esc(w)+'</span>';}).join(' ')+'</p>';
+    var td=1.7+words.length*step+.4;
+    h+='<p class="who" style="transition-delay:'+td.toFixed(2)+'s">'+esc(q.a)+'</p>';
+    if(tr) h+='<p class="qtr" style="grid-row:4;margin-top:44px;align-self:start;color:#C9CBE0;font-size:14px;max-width:220px;--td:'+(td+.4).toFixed(2)+'s">'+esc(tr)+'</p>';
+    return {html:h, in:(td+1)*1000, out:2800};
+  },
+  frost:function(q,tr,k,F){
+    // Frost is handwriting: Kalam is the Devanagari equivalent of Caveat
+    var hand = F ? (/Devanagari/.test(F) ? "'Kalam',"+q1(F) : q1(F)) : "'Caveat','Segoe Print',cursive";
+    var f=hand, r=rows(q.t, Math.round((F?17:21)/k)), step=.7;
+    var h='<p class="hand" style="font-family:'+f+';font-size:'+(28*k*(F?.82:1)).toFixed(1)+'px">'+r.map(function(x,i){return '<span style="--d:'+(1.3+i*step).toFixed(2)+'s">'+esc(x)+'</span>';}).join('');
+    var sd=1.3+r.length*step;
+    h+=(q.a?'<span class="sig" style="--d:'+sd.toFixed(2)+'s;font-family:\'Caveat\',cursive">— '+esc(q.a)+'</span>':'')+'</p>';
+    if(tr) h+='<p class="qtr" style="color:#2E4450;font-size:15px;margin:10px 0 0;--td:'+(sd+.6).toFixed(2)+'s">'+esc(tr)+'</p>';
+    [[22,14,0],[71,9,.35],[48,22,.6],[86,30,.15],[12,40,.5],[62,4,.8],[34,6,.25]].forEach(function(d){ h+='<i class="drop" style="left:'+d[0]+'%;top:'+d[1]+'%;--d:'+d[2]+'s"></i>'; });
+    return {html:h, in:(sd+1.4)*1000, out:3200};
+  },
+  ripple:function(q,tr,k,F){
+    var f=F?'font-family:'+q1(F)+';':'', fs='font-size:'+(26*k*(F?.85:1)).toFixed(1)+'px;';
+    var h='<div class="water"></div><i class="dropf"></i><i class="ring" style="--d:.6s"></i><i class="ring" style="--d:2s"></i><i class="ring" style="--d:3.4s"></i>';
+    h+='<div class="rq"><p style="'+f+fs+'">'+esc(q.t)+'</p><p class="refl" aria-hidden="true" style="'+f+fs+'">'+esc(q.t)+'</p>'+
+       (tr?'<p class="qtr" style="color:#BFE3DC;font-size:14px;margin-top:4px;--td:3s;filter:none">'+esc(tr)+'</p>':'')+
+       '<span class="by">'+esc(q.a)+'</span></div>';
+    return {html:h, in:4400, out:2800};
+  },
+  candle:function(q,tr,k,F){
+    var h='<div class="glow"></div><div class="cq"><p style="font-size:'+(27*k*(F?.85:1)).toFixed(1)+'px'+(F?';font-family:'+q1(F)+';font-style:normal':'')+'">'+esc(q.t)+'</p>'+
+      (tr?'<p class="qtr" style="color:#D9BC8C;font-size:15px;--td:3s">'+esc(tr)+'</p>':'')+
+      '<small>— '+esc(q.a)+'</small></div><div class="cnd"><div class="wick"></div><div class="flame"><i></i></div><div class="smoke"></div></div>';
+    return {html:h, in:4200, out:2800};
+  },
+  drift:function(q,tr,k,F){
+    var r=rows(q.t, Math.round((F?13:18)/k)), step=Math.min(1, 4/r.length);
+    var h='<div class="dq">'+r.map(function(x,i){return '<span style="--d:'+(1.1+i*step).toFixed(2)+'s;font-size:'+(22*k*(F?.9:1)).toFixed(1)+'px'+(F?';font-family:'+q1(F)+';font-style:normal':'')+'">'+esc(x)+'</span>';}).join('');
+    var bd=1.1+r.length*step+.3;
+    if(tr) h+='<span class="trn" style="--d:'+bd.toFixed(2)+'s;font-size:15px;margin-top:10px;color:#5A5343">'+esc(tr)+'</span>';
+    h+='<span class="by" style="--d:'+(bd+.5).toFixed(2)+'s">'+esc(q.a)+'</span></div>';
+    h+='<svg class="leaf" viewBox="0 0 34 34" aria-hidden="true"><path d="M4 30C4 14 14 4 30 4c0 16-10 26-26 26z" fill="#C98B3A"/><path d="M4 30L24 10M12 22l-1-7M17 17l-1-6M12 22l7 1M17 17l6 0" stroke="#8C5A1F" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>';
+    return {html:h, in:Math.max(5400,(bd+1)*1000), out:2600};
+  },
+  stars:function(q,tr,k,F){
+    var s='';
+    for(var i=0;i<46;i++){
+      s+='<i class="st" style="left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*92+3).toFixed(1)+'%;--s:'+(Math.random()*1.6+.6).toFixed(1)+'px;--o:'+(Math.random()*.55+.2).toFixed(2)+';--d:'+(Math.random()*2.6+.4).toFixed(2)+'s;--tw:'+(Math.random()*3+2.5).toFixed(1)+'s"></i>';
+    }
+    var d=[1.2,1.5,1.8,2.1,2.4,2.7,3], pts=[[26,70],[62,58],[96,74],[124,100],[168,96],[178,136],[134,142]];
+    var h='<div class="sky">'+s+'</div><svg class="cons" viewBox="0 0 254 200" aria-hidden="true"><polyline points="26,70 62,58 96,74 124,100 168,96 178,136 134,142 124,100"/>'+
+      pts.map(function(p,i){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(2+Math.random()*.6).toFixed(1)+'" style="--d:'+d[i]+'s"/>';}).join('')+'</svg>';
+    h+='<div class="sq"><p style="font-size:'+(19*k).toFixed(1)+'px'+(F?';font-family:'+q1(F):'')+'">'+esc(q.t)+'</p>'+
+      (tr?'<p class="qtr" style="color:#B9C0E6;font-size:14px;--td:4.6s">'+esc(tr)+'</p>':'')+
+      '<small>'+esc(q.a)+'</small></div><div class="dawn"></div>';
+    return {html:h, in:5200, out:3000};
+  }
+};
+
+/* ---------- the run ---------- */
+var run=null;
+function setState(s,instant){
+  if(instant){ stage.classList.add('instant'); stage.dataset.state=s; void stage.offsetWidth; setTimeout(function(){ stage.classList.remove('instant'); },40); }
+  else stage.dataset.state=s;
+}
+function holdMs(q,tr){
+  var words=q.t.split(/\s+/).length + (tr?tr.split(/\s+/).length*.5:0);
+  return Math.max(3500, Math.min(11000, 2000+words*330));
+}
+function goOut(){
+  if(!run || run.out) return;
+  run.out=true; clearTimeout(run.timer);
+  setState('out');
+  if(run.look==='frost') BRIDGE.blur(false, run.b.out);
+  if(run.sound) fadeSound(run.b.out/1000);
+  setTimeout(function(){ BRIDGE.done(); }, run.b.out+150);
+}
+
+function start(cfg){
+  var P=cfg.prefs||{}, Hh=cfg.history||{};
+  var q=(cfg.forceQuote && LIB.filter(function(x){return x.id===cfg.forceQuote;})[0]) || pickQuote(P,Hh), look=pickLook(P,q,Hh,cfg.hour,cfg.forceLook);
+  BRIDGE.chosen(look,q.id);
+  console.log('start '+look+' '+q.id+' '+innerWidth+'x'+innerHeight+' build=K2 font='+(F||'latin'));
+  var F=q.l!=='en'?SCRIPT_FONT[q.l]:null, tr=(P.showTr && q.l!=='en' && q.tr)?q.tr:null, k=sizeK(q.t)*(q.l==='ur'?1.2:1);   // Nastaliq sits small, give it a little more room
+  stage.className='phone '+look;
+  if(!cfg.blur) document.body.classList.add('noblur');
+  if(cfg.strength==='whisper') document.body.classList.add('whisper');
+  var b=BUILD[look](q,tr,k,F);
+  ov.innerHTML=b.html;
+  // Urdu reads right to left; only the line itself, not the English meaning or the name
+  if(q.l==='ur') ov.querySelectorAll('.deva span,.words,.hand span:not(.sig),.rq p:not(.qtr),.cq p:not(.qtr),.dq span:not(.by):not(.trn),.sq p:not(.qtr)').forEach(function(e){ e.dir='rtl'; });
+  setState('idle',true);
+  var hold=holdMs(q,tr);
+  if(cfg.strength==='whisper') hold=Math.min(hold,5000);
+  run={look:look,q:q,tr:tr,b:b,hold:hold,sound:!!cfg.sound,out:false,cfg:cfg};
+
+  var ready=[typeof fontsReady!=='undefined'?fontsReady:Promise.resolve()];
+  if(run.sound){ try{ audioInit(); if(look==='frost') ready.push(Promise.race([rainReady,new Promise(function(r){setTimeout(r,1500);})])); }catch(e){ run.sound=false; } }
+  Promise.all(ready).then(function(){
+    // start the clock only once frames are really reaching the screen (animation frames
+    // don't fire until then), with a safety net so it can never wait for ever
+    var started=false;
+    var begin=function(){
+      if(started) return; started=true;
+      setState('in');
+      if(BRIDGE.begin) BRIDGE.begin();
+      console.log('in '+innerWidth+'x'+innerHeight+' ov='+getComputedStyle(ov).opacity);
+      setTimeout(function(){ if(run) run.arrived=true; }, b.in);
+      if(look==='frost') BRIDGE.blur(true,1600);
+      if(cfg.vibrate) BRIDGE.vibrate(18);
+      if(run.sound){ try{ playSound(look,(b.in+hold)/1000,b.out/1000); }catch(e){} }
+      run.t0=Date.now(); run.timer=setTimeout(goOut, b.in+hold);
+    };
+    requestAnimationFrame(function(){ requestAnimationFrame(begin); });
+    setTimeout(begin, 4000);
+  });
+}
+
+/* ---------- boot: fetch our settings from the app and go ---------- */
+var FONT_CSS="fonts.css";   // bundled with the app: instant, and works offline
+function loadFonts(){
+  return new Promise(function(res){
+    var l=document.createElement('link'); l.rel='stylesheet'; l.href=FONT_CSS;
+    l.onload=function(){ (document.fonts?document.fonts.ready:Promise.resolve()).then(res); }; l.onerror=res;
+    document.head.appendChild(l);
+    setTimeout(res,1200);                 // never hold the moment hostage to the network
+  });
+}
+var fontsReady=loadFonts();
+/* the window may not have its size yet when the page loads: wait for it, then start */
+function whenSized(fn,tries){ if(innerWidth>0 && innerHeight>0){ fit(); fn(); } else if((tries||0)<100) setTimeout(function(){ whenSized(fn,(tries||0)+1); },20); }
+if(BRIDGE.config){ var c0=BRIDGE.config(); if(c0) whenSized(function(){ start(JSON.parse(c0)); }); }
+
+/* ---------- touch: hold to keep, or tap to close (Nudge) ---------- */
+screenEl.insertAdjacentHTML('beforeend','<div class="keep" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28"/></svg></div><div class="kchip"><svg viewBox="0 0 12 14" aria-hidden="true"><path d="M1 1h10v12L6 9.5 1 13z"/></svg>Kept</div>');
+var keepEl=screenEl.querySelector('.keep'), holdT=null, downAt=0, kept=false;
+function toStage(e){ var r=screenEl.getBoundingClientRect(), s=r.width/BW; return [(e.clientX-r.left)/s,(e.clientY-r.top)/s]; }
+document.addEventListener('pointerdown',function(e){
+  if(!run || run.out || stage.dataset.state!=='in') return;
+  downAt=Date.now();
+  if(kept) return;
+  var p=toStage(e); keepEl.style.left=p[0]+'px'; keepEl.style.top=p[1]+'px';
+  clearTimeout(run.timer); stage.classList.add('holding');
+  holdT=setTimeout(function(){
+    holdT=null; kept=true; stage.classList.remove('holding'); stage.classList.add('kept');
+    BRIDGE.keep(JSON.stringify({t:run.q.t, tr:run.q.tr||'', a:run.q.a, l:run.q.l, look:run.look}));
+    BRIDGE.vibrate(12); if(run.sound) keepTick();
+  },800);
+});
+function release(){
+  if(!run || run.out || !run.t0) return;   // not on screen yet (e.g. the app's own wake-up nudge)
+  var quick=Date.now()-downAt<300;
+  if(holdT){ clearTimeout(holdT); holdT=null; stage.classList.remove('holding'); }
+  if(quick && !kept && run.cfg.strength==='nudge' && run.arrived){ goOut(); return; }
+  // carry on where we were: never cut the arrival short
+  clearTimeout(run.timer); run.timer=setTimeout(goOut, Math.max(kept?2500:1500, run.arrived?0:run.b.in+run.hold-(Date.now()-run.t0)));
+}
+document.addEventListener('pointerup',release);
+document.addEventListener('pointercancel',release);
+</script>
+</body></html>

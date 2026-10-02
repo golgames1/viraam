@@ -1,0 +1,21 @@
+name: Something is wrong
+description: A look doesn't appear, a sound is off, something crashes
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened
+      placeholder: What you saw, and what you expected instead.
+    validations: { required: true }
+  - type: input
+    attributes:
+      label: Phone and Android version
+      placeholder: e.g. Samsung S25, Android 16
+  - type: dropdown
+    attributes:
+      label: Which look
+      options: [Not sure, Ink, Breath, Frost, Ripple, Candle, Drift, Stars, The settings screen]
+  - type: textarea
+    attributes:
+      label: Anything else
+      placeholder: Was the phone sideways, on silent, low on battery? Did it happen more than once?

@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root{
+  --bg:#F1F3F0; --card:#fff; --ink:#1D2421; --muted:#55615B; --faint:#7A857F; --line:#DCE1DD; --chipline:#CBD3CE;
+  --moss:#3D6B5C; --moss-soft:#DCE7E1;
+  --serif:"Newsreader",Georgia,serif; --sans:"Figtree",system-ui,sans-serif; --mono:"JetBrains Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 var(--sans); -webkit-tap-highlight-color:transparent}
+button{font:inherit; color:inherit}
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{outline:2px solid var(--moss); outline-offset:2px}
+h1,h2{margin:0; font-family:var(--serif); font-weight:400; text-wrap:balance}
+p{margin:0}
+[hidden]{display:none !important}
+
+.page{padding:20px 18px 110px; display:grid; gap:18px; max-width:560px; margin:0 auto}
+.kick{font:500 11px var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
+h1{font-size:34px; line-height:1.05}
+h2{font-size:26px; line-height:1.1}
+.lede{color:var(--muted)}
+.lbl{font:600 12px var(--sans); letter-spacing:.06em; text-transform:uppercase; color:var(--faint); margin-bottom:8px; display:flex; justify-content:space-between; align-items:baseline}
+.lbl em{font-style:normal; font-weight:500; letter-spacing:0; text-transform:none; color:var(--moss)}
+.note{font-size:13px; color:var(--faint); line-height:1.45}
+
+/* status */
+.status{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; background:var(--card); border-radius:16px; padding:14px 16px; box-shadow:0 1px 0 var(--line)}
+.status .dot{width:10px; height:10px; border-radius:50%; background:#C9A15E}
+.status.on .dot{background:var(--moss); box-shadow:0 0 0 4px var(--moss-soft)}
+.status > span > b{display:block; font-weight:600}
+.status small{display:block; color:var(--muted); font-size:13px; line-height:1.35}
+.meter{height:4px; border-radius:2px; background:var(--line); margin-top:6px; overflow:hidden}
+.meter i{display:block; height:100%; background:var(--moss); transition:width .6s}
+.btn{border:0; border-radius:10px; padding:10px 14px; background:var(--moss); color:#fff; font-weight:600; font-size:14px; cursor:pointer; white-space:nowrap}
+.btn.ghost{background:var(--card); color:var(--moss); border:1px solid var(--chipline)}
+.btn.big{width:100%; padding:14px; font-size:16px; border-radius:14px}
+
+/* controls */
+.seg{display:grid; grid-auto-flow:column; grid-auto-columns:1fr; background:#E3E8E4; border-radius:12px; padding:3px; gap:2px}
+.seg button{border:0; background:none; border-radius:10px; padding:10px 4px; font-weight:600; font-size:13.5px; color:var(--muted); cursor:pointer}
+.seg button[aria-pressed="true"]{background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.group{background:var(--card); border-radius:14px; padding:2px 14px}
+.row{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #E8ECE9}
+.row:last-child{border-bottom:0}
+.row .sub{display:block; font-size:12.5px; color:var(--faint)}
+.tog{position:relative; width:46px; height:28px; border-radius:14px; border:0; background:#CBD3CE; cursor:pointer; flex:none; transition:background .2s}
+.tog::after{content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.2); transition:transform .2s}
+.tog[aria-pressed="true"]{background:var(--moss)}
+.tog[aria-pressed="true"]::after{transform:translateX(18px)}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{border:1px solid var(--chipline); background:#fff; border-radius:999px; padding:8px 14px; font-size:14px; font-weight:500; cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--moss); border-color:var(--moss); color:#fff}
+.chip.script{font-size:16px; padding:6px 14px}
+.stepper{display:flex; align-items:center; gap:8px; font:500 13px var(--mono); color:var(--muted)}
+.stepper button{width:32px; height:32px; border-radius:50%; border:1px solid var(--chipline); background:#fff; font:600 17px/1 var(--sans); cursor:pointer}
+.stepper span{min-width:50px; text-align:center}
+
+/* looks */
+.tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.tile{position:relative}
+.tile .sel{display:grid; align-content:end; width:100%; height:112px; border:0; border-radius:16px; padding:12px; text-align:left; font-weight:600; font-size:16px; cursor:pointer; transition:opacity .2s, filter .2s}
+.tile .sel small{display:block; font-weight:500; font-size:12px; opacity:.8}
+.tile .sel[aria-pressed="false"]{opacity:.38; filter:grayscale(.8)}
+.tile .tick{position:absolute; top:10px; left:10px; width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.92); display:grid; place-items:center; pointer-events:none}
+.tile .tick svg{width:12px; height:12px; fill:none; stroke:#1D2421; stroke-width:2}
+.tile .sel[aria-pressed="false"] ~ .tick{display:none}
+.tile .star{position:absolute; top:6px; right:6px; width:34px; height:34px; border:0; background:none; cursor:pointer; display:grid; place-items:center}
+.tile .star svg{width:18px; height:18px; stroke-width:1.4; stroke-linejoin:round}
+.tile .star[aria-pressed="true"] svg{fill:#F2C14E; stroke:#B8872A}
+.tile .star[aria-pressed="false"] svg{fill:none; stroke:rgba(255,255,255,.85)}
+.tile.light .star[aria-pressed="false"] svg{stroke:rgba(0,0,0,.35)}
+.tile .play{position:absolute; right:10px; bottom:10px; border:0; border-radius:999px; padding:5px 10px; font:600 12px var(--sans); background:rgba(255,255,255,.88); color:#1D2421; cursor:pointer}
+
+/* words */
+.mixbar{display:flex; height:10px; border-radius:5px; overflow:hidden; background:var(--line); margin-bottom:10px}
+.mixbar i{display:block; height:100%}
+.mixrow{display:grid; grid-template-columns:12px 1fr auto; gap:10px; align-items:center; padding:4px 0}
+.mixrow .d{width:12px; height:12px; border-radius:50%}
+.qcard{background:#fff; border-radius:16px; padding:18px; display:grid; gap:8px; box-shadow:0 1px 0 var(--line)}
+.qcard .qt{font-size:20px; line-height:1.5}
+.qcard .qtr{font:italic 15px/1.45 var(--serif); color:var(--muted)}
+.qcard .qby{font:500 10.5px var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--faint)}
+.link{justify-self:start; border:0; background:none; padding:4px 0; color:var(--moss); font-weight:600; cursor:pointer}
+
+/* your own */
+.mine{display:grid; gap:8px}
+.mq{background:#fff; border-radius:12px; padding:12px 14px; display:grid; grid-template-columns:1fr auto; gap:4px 10px; align-items:start}
+.mq p{font:italic 16px/1.4 var(--serif)}
+.mq small{grid-column:1; font:500 10.5px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--faint)}
+.mq .x{grid-row:1 / span 2; grid-column:2; border:0; background:none; color:var(--faint); font-size:20px; line-height:1; padding:2px 4px; cursor:pointer}
+.add{display:grid; gap:8px; background:#fff; border-radius:14px; padding:14px}
+.add textarea, .add input, .add select{width:100%; font:15px var(--sans); color:var(--ink); border:1px solid var(--chipline); border-radius:10px; padding:10px 12px; background:#FAFBFA; resize:none}
+.add .two{display:grid; grid-template-columns:1fr auto; gap:8px}
+
+.status .facts{margin-top:6px; font-size:12px; color:var(--faint)}
+.pauserow{display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:10px; margin-top:-8px}
+.two2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.mqbtns{grid-row:1 / span 2; grid-column:2; display:flex; gap:2px}
+select.tsel{font:500 14px var(--sans); color:var(--ink); background:#fff; border:1px solid var(--chipline); border-radius:10px; padding:8px 10px}
+
+/* tab bar */
+.tabbar{position:fixed; left:0; right:0; bottom:0; display:grid; grid-template-columns:repeat(4,1fr); background:#F8F9F7; border-top:1px solid var(--line); padding:6px 4px 10px}
+.tabbar button{border:0; background:none; display:grid; justify-items:center; gap:3px; padding:6px 0; font:600 12px var(--sans); color:var(--faint); cursor:pointer}
+.tabbar svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round}
+.tabbar button[aria-pressed="true"]{color:var(--moss)}
+
+/* onboarding */
+.feel{display:grid; gap:10px}
+.feel button{display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 12px; text-align:left; border:2px solid transparent; border-radius:18px; padding:18px; cursor:pointer; color:#fff}
+.feel button b{font:400 24px var(--serif)}
+.feel button span{grid-column:1; font-size:13px; opacity:.85}
+.feel button i{grid-row:1 / span 2; grid-column:2; width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,.8); display:grid; place-items:center; font-style:normal}
+.feel button[aria-pressed="true"]{border-color:#fff; box-shadow:0 0 0 3px var(--moss)}
+.feel button[aria-pressed="true"] i{background:#fff; color:var(--moss)}
+.feel button.light{color:#1D2421} .feel button.light i{border-color:rgba(0,0,0,.4)}
+.steps{display:flex; gap:6px}
+.steps i{flex:1; height:4px; border-radius:2px; background:var(--line)}
+.steps i.on{background:var(--moss)}
+.perm{display:grid; gap:10px; background:#fff; border-radius:16px; padding:18px}
+.perm ol{margin:0; padding-left:20px; display:grid; gap:6px; color:var(--muted)}
+.foot{position:fixed; left:0; right:0; bottom:0; padding:12px 18px 16px; background:linear-gradient(rgba(241,243,240,0),var(--bg) 30%); display:grid; grid-template-columns:auto 1fr; gap:10px}
+</style>
+<script src="quotes.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+var A=window.Android||{getPrefs:function(){return localStorage.getItem('p')||'{}';},setPrefs:function(s){localStorage.setItem('p',s);},serviceOn:function(){return false;},meter:function(){return -1;},openAccessibility:function(){},testIn:function(){},preview:function(){},installedApps:function(){return '{}';},status:function(){return '{}';},pauseFor:function(){},share:function(){},exportData:function(){},importData:function(){}};
+var S=JSON.parse(A.getPrefs());
+var view={tab:'looks', onbStep:0, sample:null};
+var root=document.getElementById('root');
+
+var LOOKS=[
+  {id:'ink',w:'Any time',bg:'#E8E4DA',fg:'#1C1B18',light:1},
+  {id:'breath',w:'Any time',bg:'linear-gradient(180deg,#141931,#3A3570)',fg:'#ECE6F4'},
+  {id:'frost',w:'Any time',bg:'linear-gradient(160deg,#E4EBEE,#B7C7CF)',fg:'#243640',light:1},
+  {id:'ripple',w:'Daytime',bg:'radial-gradient(130% 90% at 50% 70%,#22656C,#0A2A33)',fg:'#E6F3EF'},
+  {id:'candle',w:'After sunset',bg:'radial-gradient(circle at 50% 95%,#8a5420,#0A0806 65%)',fg:'#F1D6A4'},
+  {id:'drift',w:'Daytime',bg:'linear-gradient(180deg,#E9EEE1,#F4EEE0)',fg:'#3E3A2E',light:1},
+  {id:'stars',w:'After sunset',bg:'radial-gradient(120% 80% at 50% 15%,#18213F,#05070F)',fg:'#E3E6F5'}
+];
+var LCOL={en:'#3D6B5C',hi:'#C46A4A',ur:'#5B6FA8',sa:'#B8923F',bn:'#8E5B8C',pa:'#D08A3C',ta:'#4F8E8E'};
+var FEELS=[
+  {id:'calm',n:'Calm',d:'Breath and Ripple',looks:['breath','ripple'],bg:'linear-gradient(135deg,#25234F,#22656C)'},
+  {id:'hand',n:'Handmade',d:'Ink and Frost',looks:['ink','frost'],bg:'linear-gradient(135deg,#E8E4DA,#C9D6DC)',light:1},
+  {id:'nature',n:'Nature',d:'Drift, Ripple and Frost',looks:['drift','ripple','frost'],bg:'linear-gradient(135deg,#E9EEE1,#8FB5A5)',light:1},
+  {id:'night',n:'Night',d:'Candle and Stars',looks:['candle','stars'],bg:'linear-gradient(135deg,#3a2410,#18213F)'}
+];
+var feelSel={calm:1,hand:1,night:1};
+
+var check='<svg viewBox="0 0 10 10"><path d="M2 5.2l2 2L8 3"/></svg>';
+var star='<svg viewBox="0 0 20 20"><path d="M10 2.5l2.3 4.7 5.2.8-3.8 3.6.9 5.1-4.6-2.4-4.6 2.4.9-5.1L2.5 8l5.2-.8z"/></svg>';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function P(b){return b?'true':'false';}
+function save(){
+  // lines kept from an interlude are written by the app, so pick those up before saving
+  if(!view.keptEdit){ try{ S.kept=JSON.parse(A.getPrefs()).kept||[]; }catch(e){} }
+  view.keptEdit=false;
+  A.setPrefs(JSON.stringify(S));
+}
+function seg(key,opts){return '<div class="seg" role="group">'+opts.map(function(o){return '<button type="button" data-set="'+key+'" data-val="'+o[0]+'" aria-pressed="'+P(S[key]===o[0])+'">'+o[1]+'</button>';}).join('')+'</div>';}
+function tog(key,label,sub){return '<div class="row"><span>'+label+(sub?'<span class="sub">'+sub+'</span>':'')+'</span><button type="button" class="tog" data-tog="'+key+'" aria-pressed="'+P(S[key])+'" aria-label="'+esc(label)+'"></button></div>';}
+function timeSel(key){
+  var out='<select class="tsel" data-time="'+key+'" aria-label="'+key+'">';
+  for(var m=0;m<24*60;m+=30){
+    var hh=Math.floor(m/60), mm=m%60, v=('0'+hh).slice(-2)+':'+('0'+mm).slice(-2);
+    var label=((hh%12)||12)+':'+('0'+mm).slice(-2)+' '+(hh<12?'am':'pm');
+    out+='<option value="'+v+'"'+(S[key]===v?' selected':'')+'>'+label+'</option>';
+  }
+  return out+'</select>';
+}
+function langOf(id){return LANGS.filter(function(l){return l.id===id;})[0];}
+function fontFor(l){ return l==='en'?'var(--serif)':SCRIPT_FONT[l]; }
+
+/* ---------- sample from the current mix ---------- */
+function pickSample(){
+  var p=libraryPool(S); if(!p.length){ view.sample=null; return; }
+  var q=weighted(p,function(x){return S.w[x.l]||1;});
+  if(q===view.sample && p.length>1) return pickSample();
+  view.sample=q;
+}
+
+/* ---------- blocks shared by onboarding and tabs ---------- */
+function wordsBlock(){
+  var pool=libraryPool(S), on=LANGS.filter(function(l){return S.w[l.id];});
+  var h='<div><p class="lbl">What kind <em>'+GENRES.filter(function(g){return S.genres[g];}).length+' chosen</em></p><div class="chips">'+
+    GENRES.map(function(g){return '<button type="button" class="chip" data-genre="'+esc(g)+'" aria-pressed="'+P(S.genres[g])+'">'+esc(g)+'</button>';}).join('')+'</div></div>';
+  h+='<div><p class="lbl">Languages <em>'+on.length+' chosen</em></p><div class="chips">'+
+    LANGS.map(function(l){return '<button type="button" class="chip script" data-lang="'+l.id+'" aria-pressed="'+P(S.w[l.id])+'" style="font-family:'+fontFor(l.id)+'" aria-label="'+l.n+'">'+l.s+'</button>';}).join('')+'</div></div>';
+  if(on.length>1){
+    var tot=0; on.forEach(function(l){tot+=S.w[l.id];});
+    h+='<div><p class="lbl">Your mix</p><div class="mixbar">'+on.map(function(l){return '<i style="background:'+LCOL[l.id]+';flex-grow:'+S.w[l.id]+'"></i>';}).join('')+'</div>'+
+      on.map(function(l){return '<div class="mixrow"><i class="d" style="background:'+LCOL[l.id]+'"></i><span>'+l.n+' <span class="note">· '+Math.round(S.w[l.id]/tot*100)+'%</span></span><span class="stepper"><button type="button" data-w="'+l.id+'" data-d="-1" aria-label="Less '+l.n+'">−</button><span>'+['','Less','Equal','More'][S.w[l.id]]+'</span><button type="button" data-w="'+l.id+'" data-d="1" aria-label="More '+l.n+'">+</button></span></div>';}).join('')+'</div>';
+  }
+  h+='<div class="group">'+tog('showTr','Show English meaning','Under lines in other languages')+'</div>';
+  if(view.sample && pool.indexOf(view.sample)<0) view.sample=null;
+  if(!view.sample) pickSample();
+  h+='<div><p class="lbl">From your mix <em>'+pool.length+' lines</em></p>';
+  if(view.sample){
+    var q=view.sample;
+    h+='<div class="qcard"><p class="qt" style="font-family:'+fontFor(q.l)+(q.l==='ur'?';direction:rtl;line-height:2.1':'')+'">'+esc(q.t)+'</p>'+
+      (q.tr&&S.showTr?'<p class="qtr">'+esc(q.tr)+'</p>':'')+'<p class="qby">'+esc(q.a)+' · '+langOf(q.l).n+'</p><button type="button" class="link" data-act="another">Show another →</button></div>';
+  } else h+='<div class="qcard"><p class="qtr">Nothing matches that mix yet. Try adding <b>Poetry</b> or <b>English</b>.</p></div>';
+  return h+'</div>';
+}
+
+/* ---------- tabs ---------- */
+var TABS={
+  looks:function(){
+    var n=LOOK_IDS.filter(function(id){return S.on[id];}).length;
+    var h='<div>'+seg('mode',[['rotate','Rotate my picks'],['one','Always one']])+'</div>';
+    h+='<div><p class="lbl">'+(S.mode==='rotate'?'In rotation <em>'+n+' of 7</em>':'Pick one')+'</p><div class="tiles">'+LOOKS.map(function(l){
+      return '<div class="tile'+(l.light?' light':'')+'"><button type="button" class="sel" data-look="'+l.id+'" aria-pressed="'+P(S.on[l.id])+'" style="background:'+l.bg+';color:'+l.fg+'">'+LOOK_NAMES[l.id]+'<small>'+l.w+'</small></button><span class="tick">'+check+'</span>'+
+        (S.mode==='rotate'?'<button type="button" class="star" data-fav="'+l.id+'" aria-pressed="'+P(S.fav[l.id])+'" aria-label="Favourite '+LOOK_NAMES[l.id]+'">'+star+'</button>':'')+
+        '<button type="button" class="play" data-preview="'+l.id+'">▶ Preview</button></div>';
+    }).join('')+'</div></div>';
+    h+='<div class="group">'+tog('timeOfDay','Let time of day choose','Candle and Stars after dark, Drift and Ripple by day')+'</div>';
+    h+='<p class="note">'+(S.mode==='rotate'?'Starred looks come up about twice as often. Never the same look twice in a row.':'Only this look will appear.')+'</p>';
+    return h;
+  },
+  words:wordsBlock,
+  yours:function(){
+    var h='<div><p class="lbl">Your lines <em>'+S.mine.length+'</em></p><div class="mine">'+(S.mine.length?'':'<p class="note">Nothing yet. Add a line below: a reminder, something someone once told you, a line from a book.</p>')+
+      S.mine.map(function(m,i){ return '<div class="mq"><p>'+esc(m.t)+'</p><small>'+(m.a?esc(m.a)+' · ':'')+(m.look==='any'?'Any look':LOOK_NAMES[m.look])+'</small><button type="button" class="x" data-del="'+i+'" aria-label="Remove">×</button></div>'; }).join('')+'</div></div>';
+    h+='<div class="add"><p class="lbl">Add a line</p><textarea id="yl" rows="2" maxlength="200" placeholder="Something worth pausing for"></textarea><input id="ya" type="text" maxlength="40" placeholder="Who said it (optional)">'+
+      '<div class="two"><select id="ylook" aria-label="Show in"><option value="any">Any look</option>'+LOOK_IDS.map(function(id){return '<option value="'+id+'">'+LOOK_NAMES[id]+'</option>';}).join('')+'</select><button type="button" class="btn" data-act="add">Add</button></div></div>';
+    h+='<div><p class="lbl">How often yours appear</p>'+seg('freq',[['sometimes','Now & then'],['often','Often'],['only','Only mine']])+'</div>';
+    var kept=(S.kept||[]).slice().reverse();
+    h+='<div><p class="lbl">Kept <em>'+kept.length+'</em></p><div class="mine">'+(kept.length?'':'<p class="note">Press and hold any interlude to keep its line here.</p>')+
+      kept.map(function(k){ var i=S.kept.indexOf(k); return '<div class="mq"><p style="font-family:'+fontFor(k.l||'en')+(k.l&&k.l!=='en'?';font-style:normal':'')+'">'+esc(k.t)+'</p><small>'+esc(k.a)+' · '+(LOOK_NAMES[k.look]||'')+'</small><span class="mqbtns"><button type="button" class="x" data-share="'+i+'" aria-label="Share">↗</button><button type="button" class="x" data-delkept="'+i+'" aria-label="Remove">×</button></span></div>'; }).join('')+'</div></div>';
+    h+='<div><p class="lbl">Backup</p><div class="two2"><button type="button" class="btn ghost" data-act="export">Save a copy</button><button type="button" class="btn ghost" data-act="import">Restore</button></div><p class="note" style="margin-top:8px">Saves your own lines and kept lines to Downloads, so they survive reinstalling the app.</p></div>';
+    return h;
+  },
+  when:function(){
+    var h='<div><p class="lbl">Strength</p>'+seg('strength',[['whisper','Whisper'],['nudge','Nudge'],['pause','Pause']])+
+      '<p class="note" style="margin-top:8px">'+{whisper:'See-through, your taps pass through, about 5 seconds.',nudge:'Full screen. Tap to close it early.',pause:'Full screen. Stays until it fades.'}[S.strength]+' Press and hold to keep a line.</p></div>';
+    h+='<div><p class="lbl">Sensitivity</p>'+seg('sens',[['gentle','Gentle'],['balanced','Balanced'],['watchful','Watchful']])+
+      '<p class="note" style="margin-top:8px">'+{gentle:'Only after long, fast scrolling.',balanced:'After a good stretch of scrolling on autopilot.',watchful:'Steps in sooner, especially late at night.'}[S.sens]+'</p></div>';
+    var have={}; try{ have=JSON.parse(A.installedApps()||'{}'); }catch(e){}
+  var list=Object.keys(S.apps).filter(function(a){ return have[a]!==false; });
+  var hidden=Object.keys(S.apps).length-list.length;
+  h+='<div><p class="lbl">Watch these apps</p><div class="group">'+list.map(function(a){return '<div class="row"><span>'+esc(a)+'</span><button type="button" class="tog" data-app="'+esc(a)+'" aria-pressed="'+P(S.apps[a])+'" aria-label="'+esc(a)+'"></button></div>';}).join('')+'</div>'+
+    (hidden?'<p class="note" style="margin-top:8px">'+hidden+' more are hidden because they are not on this phone. They appear here if you install them.</p>':'')+'</div>';
+    h+='<div class="group">'+tog('quiet','Quiet hours','Nothing appears between these times')+
+      (S.quiet?'<div class="row"><span>From</span>'+timeSel('quietFrom')+'</div><div class="row"><span>Until</span>'+timeSel('quietTo')+'</div>':'')+
+      '<div class="row"><span>Most in a day</span><span class="stepper"><button type="button" data-act="max" data-d="-1" aria-label="Fewer">−</button><span>'+S.maxDay+'</span><button type="button" data-act="max" data-d="1" aria-label="More">+</button></span></div></div>';
+    h+='<div><p class="lbl">About</p><div class="group">'+
+      '<div class="row"><span>Viraam <span class="sub">विराम · a pause. Version 0.1.0</span></span></div>'+
+      '<div class="row"><span>Rain recording<span class="sub">"Sound of light rainfall" by Mijesty, Wikimedia Commons, CC BY-SA 4.0</span></span></div>'+
+      '<div class="row"><span>Lettering<span class="sub">Google Fonts, SIL Open Font License</span></span></div>'+
+      '<div class="row"><span>The words<span class="sub">All old enough to be out of copyright. English meanings by the author.</span></span></div>'+
+      '<div class="row"><span>This app<span class="sub">MIT licence · github.com/golgames1/viraam · no internet permission, nothing is collected</span></span></div>'+
+    '</div></div>';
+  h+='<div><p class="lbl">Sound</p>'+seg('sound',[['follow','Follow phone'],['on','Always'],['off','Off']])+'<p class="note" style="margin-top:8px">Follow phone: it plays like a video does, so it stays quiet only when Do Not Disturb is on or your media volume is down. When it stays quiet you get one soft buzz instead.</p></div>';
+    return h;
+  }
+};
+var TITLES={looks:'Looks',words:'Words',yours:'Your own',when:'When'};
+var ICONS={
+  looks:'<svg viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg>',
+  words:'<svg viewBox="0 0 20 20"><path d="M4 6h12M4 10h12M4 14h7"/></svg>',
+  yours:'<svg viewBox="0 0 20 20"><path d="M4 16l1-4 8-8 3 3-8 8zM11 6l3 3"/></svg>',
+  when:'<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/></svg>'
+};
+
+function clock(ms){ if(!ms) return '-'; var d=new Date(ms); return (d.getHours()%12||12)+':'+('0'+d.getMinutes()).slice(-2)+' '+(d.getHours()<12?'am':'pm'); }
+function statusHtml(){
+  var on=A.serviceOn();
+  if(!on) return '<div class="status" id="status"><i class="dot"></i><span><b>Viraam is off</b><small>Switch it on in Accessibility: tap <b>Viraam</b>, turn it on, then Allow. On some phones it is under "Installed apps" or "Downloaded apps".</small></span><button type="button" class="btn" data-act="enable">Turn on</button></div>';
+  var st={}; try{ st=JSON.parse(A.status()||'{}'); }catch(e){}
+  var paused = st.pausedUntil>Date.now();
+  var why = {paused:'Paused until '+clock(st.pausedUntil), cooldown:'Next one possible after '+clock(st.nextPossible),
+             'daily limit':'That is all for today ('+st.maxDay+')', 'quiet hours':'Quiet hours', locked:'Phone is locked',
+             sideways:'Phone is sideways', 'on a call':'You are on a call', typing:'You are typing', showing:'Showing one now'}[st.blocked];
+  var h='<div class="status '+(paused?'':'on')+'" id="status"><i class="dot"></i><span><b>'+(paused?'Paused':'On, watching gently')+'</b>'+
+    '<small>'+(why||'Ready. A pause can appear any time now.')+'</small>'+
+    '<div class="meter"><i style="width:'+(st.drift||0)+'%"></i></div>'+
+    '<small class="facts">Drift '+(st.drift||0)+'% &middot; '+(st.today||0)+' of '+(st.maxDay||6)+' today'+
+      (st.lastShown?' &middot; last at '+clock(st.lastShown):'')+'</small></span>'+
+    '<button type="button" class="btn ghost" data-act="test">Try it</button></div>';
+  h+='<div class="pauserow">'+(paused
+      ? '<button type="button" class="btn" data-act="resume">Resume now</button>'
+      : '<button type="button" class="btn ghost" data-act="pause2">Pause 2 hours</button><button type="button" class="btn ghost" data-act="pauseday">Pause for today</button>')+'</div>';
+  return h;
+}
+
+/* ---------- onboarding ---------- */
+function onboarding(){
+  var st=view.onbStep, h='<div class="page"><div class="steps">'+[0,1,2].map(function(i){return '<i class="'+(i<=st?'on':'')+'"></i>';}).join('')+'</div>';
+  if(st===0){
+    h+='<p class="kick">Welcome to Viraam</p><h1>Pick a feel</h1><p class="lede">Now and then, when scrolling runs on autopilot, a quiet line will take over the screen for a few seconds, then let you go. Choose how it should look. You can change this any time.</p>';
+    h+='<div class="feel">'+FEELS.map(function(f){return '<button type="button" class="'+(f.light?'light':'')+'" data-feel="'+f.id+'" aria-pressed="'+P(feelSel[f.id])+'" style="background:'+f.bg+'"><b>'+f.n+'</b><span>'+f.d+'</span><i>'+(feelSel[f.id]?'✓':'')+'</i></button>';}).join('')+'</div>';
+    h+='<p class="note">Want to see one first? Each look has a Preview button later, on the Looks tab.</p>';
+  } else if(st===1){
+    h+='<p class="kick">Step 2 of 3</p><h1>Pick your words</h1><p class="lede">Choose any kinds and languages, and mix them freely. The sample below changes as you tap.</p>'+wordsBlock();
+  } else {
+    var on=A.serviceOn();
+    h+='<p class="kick">Step 3 of 3</p><h1>Let it notice when you drift</h1><p class="lede">Viraam needs one permission to know when you\'ve been scrolling for a while. It only sees which app is open and when you swipe. It never reads what\'s on your screen, and nothing leaves your phone.</p>';
+    h+='<div class="perm"><p><b>'+(on?'All set. Viraam is on.':'How to switch it on')+'</b></p>'+(on?'':'<ol><li>Tap <b>Open settings</b> below.</li><li>Find <b>Viraam</b>. On some phones it\'s under "Installed apps" or "Downloaded apps".</li><li>Switch it on and tap <b>Allow</b>. Android shows a strong warning here. That\'s normal for this kind of permission.</li><li>Come back to this screen.</li></ol><button type="button" class="btn big" data-act="enable">Open settings</button>')+'</div>';
+  }
+  h+='</div><div class="foot">'+(st>0?'<button type="button" class="btn ghost" data-act="back">Back</button>':'<span></span>')+
+    '<button type="button" class="btn big" data-act="next">'+(st<2?'Continue':'Finish')+'</button></div>';
+  return h;
+}
+
+function render(){
+  var y=window.scrollY;
+  if(!S.onboarded){ root.innerHTML=onboarding(); return; }
+  root.innerHTML='<div class="page"><div><p class="kick">Viraam</p><h1>'+TITLES[view.tab]+'</h1></div>'+statusHtml()+TABS[view.tab]()+'</div>'+
+    '<nav class="tabbar" aria-label="Tabs">'+Object.keys(TABS).map(function(t){return '<button type="button" data-tab="'+t+'" aria-pressed="'+P(view.tab===t)+'">'+ICONS[t]+TITLES[t]+'</button>';}).join('')+'</nav>';
+  window.scrollTo(0,y);
+}
+window.refreshStatus=function(){
+  try{ var k=JSON.parse(A.getPrefs()).kept||[]; if(k.length!==(S.kept||[]).length){ S.kept=k; if(view.tab==='yours' && S.onboarded){ render(); return; } } }catch(e){}
+  var el=document.getElementById('status');
+  if(el){ var t=document.createElement('div'); t.innerHTML=statusHtml(); el.replaceWith(t.firstChild); }
+  else if(!S.onboarded && view.onbStep===2) render();
+};
+setInterval(function(){ if(document.visibilityState==='visible') refreshStatus(); },5000);
+
+root.addEventListener('change',function(e){
+  var sel=e.target.closest('select[data-time]'); if(!sel) return;
+  S[sel.dataset.time]=sel.value; save();
+});
+root.addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  var d=b.dataset, changed=true;
+  if(d.tab){ view.tab=d.tab; render(); window.scrollTo(0,0); return; }
+  if(d.preview){ A.preview(d.preview); return; }
+  if(d.act==='enable'){ A.openAccessibility(); return; }
+  if(d.act==='test'){ A.testIn(10); return; }
+  if(d.act==='pause2'){ A.pauseFor(120); refreshStatus(); return; }
+  if(d.act==='pauseday'){ var e=new Date(); e.setHours(23,59,0,0); A.pauseFor(Math.max(1,Math.round((e-Date.now())/60000))); refreshStatus(); return; }
+  if(d.act==='resume'){ A.pauseFor(0); refreshStatus(); return; }
+  if(d.act==='export'){ A.exportData(); return; }
+  if(d.act==='import'){ A.importData(); return; }
+  if(d.share){ var kq=S.kept[+d.share]; if(kq) A.share(kq.t+(kq.a?'\n\u2014 '+kq.a:'')+'\n\nvia Viraam'); return; }
+  if(d.act==='next'){
+    if(view.onbStep===0){ var on={}; FEELS.forEach(function(f){ if(feelSel[f.id]) f.looks.forEach(function(id){on[id]=1;}); }); if(Object.keys(on).length){ LOOK_IDS.forEach(function(id){ S.on[id]=on[id]?1:0; }); save(); } }
+    if(view.onbStep<2){ view.onbStep++; } else { S.onboarded=true; save(); }
+    render(); window.scrollTo(0,0); return;
+  }
+  if(d.act==='back'){ view.onbStep=Math.max(0,view.onbStep-1); render(); window.scrollTo(0,0); return; }
+  if(d.feel){ feelSel[d.feel]=feelSel[d.feel]?0:1; render(); return; }
+
+  if(d.set){ S[d.set]=d.val;
+    if(d.set==='mode' && d.val==='one'){ var first=LOOK_IDS.filter(function(id){return S.on[id];})[0]||'breath'; LOOK_IDS.forEach(function(id){S.on[id]=id===first?1:0;}); }
+    if(d.set==='mode' && d.val==='rotate'){ LOOK_IDS.forEach(function(id){S.on[id]=1;}); }
+  }
+  else if(d.tog){ S[d.tog]=S[d.tog]?0:1; }
+  else if(d.look){
+    if(S.mode==='one'){ LOOK_IDS.forEach(function(id){S.on[id]=id===d.look?1:0;}); }
+    else { var n=LOOK_IDS.filter(function(id){return S.on[id];}).length; if(S.on[d.look] && n===1) return; S.on[d.look]=S.on[d.look]?0:1; }
+  }
+  else if(d.fav){ S.fav[d.fav]=S.fav[d.fav]?0:1; }
+  else if(d.genre){ S.genres[d.genre]=S.genres[d.genre]?0:1; }
+  else if(d.lang){ if(S.w[d.lang]){ if(LANGS.filter(function(l){return S.w[l.id];}).length>1) S.w[d.lang]=0; } else S.w[d.lang]=2; }
+  else if(d.w){ S.w[d.w]=Math.max(1,Math.min(3,S.w[d.w]+(+d.d))); }
+  else if(d.app){ S.apps[d.app]=S.apps[d.app]?0:1; }
+  else if(d.act==='another'){ pickSample(); changed=false; }
+  else if(d.act==='max'){ S.maxDay=Math.max(1,Math.min(12,S.maxDay+(+d.d))); }
+  else if(d.act==='add'){
+    var t=document.getElementById('yl').value.trim(); if(!t) return;
+    S.mine.push({t:t, a:document.getElementById('ya').value.trim(), look:document.getElementById('ylook').value});
+  }
+  else if(d.del){ S.mine.splice(+d.del,1); }
+  else if(d.delkept){ S.kept.splice(+d.delkept,1); view.keptEdit=true; }
+  else changed=false;
+  if(changed) save();
+  render();
+});
+render();
+</script>
+</body></html>
